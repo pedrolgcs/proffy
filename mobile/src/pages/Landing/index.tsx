@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+
+import api from '../../services/api';
 
 // styles
 import {
@@ -21,7 +23,16 @@ import giveClassesIcon from '../../assets/images/icons/give-classes.png';
 import heardIcon from '../../assets/images/icons/heart.png';
 
 const Landing: React.FC = () => {
+  const [totalConnections, setTotalConnections] = useState(0);
   const { navigate } = useNavigation();
+
+  useEffect(() => {
+    async function loadTotalConnections() {
+      const { data } = await api.get('connections');
+      setTotalConnections(data.total);
+    }
+    loadTotalConnections();
+  }, []);
 
   function handleNavigateToGiveClassesPage() {
     navigate('GiveClasses');
@@ -49,7 +60,7 @@ const Landing: React.FC = () => {
         </Button>
       </ButtonsContainer>
       <TotalConnections>
-        Total de 285 conexões já realizadas{' '}
+        Total de {totalConnections} conexões já realizadas{' '}
         <TotalConnectionsImage source={heardIcon} />
       </TotalConnections>
     </Container>
